@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var tweet = require('./routes/tweet');
 
 var app = express();
 
@@ -24,6 +25,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/tweet', tweet);
+
+/*app.get('/', function(req, res) {
+    res.render('index', {title: 'The index page!'})
+});*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

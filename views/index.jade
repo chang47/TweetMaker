@@ -1,5 +1,8 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	p Welcome to #{title}
+	form(id="myID", method="post", action="/result")
+		input(id="url", type="text", name="url")
+		button(id="button" type="submit") submit
