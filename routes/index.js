@@ -32,10 +32,7 @@ router.post('/result', function(req, res) {
 		});
 		casper.run();
 	});
-	var num = 0;
-	for(var i = 0; i < 1000000; i++) {
-		num++;
-	}
+
 	res.render('result', { title: num})
 	
 });
