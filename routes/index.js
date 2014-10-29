@@ -37,4 +37,8 @@ router.post('/result', function(req, res) {
 	
 });
 
+router.get('/craigs', function(req, res) {
+    res.render("craigs");
+})
+
 module.exports = router;
