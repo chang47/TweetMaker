@@ -23,13 +23,35 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/tweet', tweet);
+app.get('/', function(req, res) {
+    res.render("craigs");
+})
 
-/*app.get('/', function(req, res) {
-    res.render('index', {title: 'The index page!'})
-});*/
+app.post('/searching', function(req, res) {
+    var val = req.query.search;
+    
+    var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20craigslist.search" +
+"%20where%20location%3D%22sfbay%22%20and%20type%3D%22jjj%22%20and%20query%3D%22" + val + "%22&format=" +
+"json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+    console.log(url);
+
+    request(url, function(err, resp, body) {
+        body = JSON.parse(body);
+        if(!body.query.results.RDF.item) {
+            craig = "No results found. Try Again.";
+        } else {
+            craig = body.query.results.item[0]['about'];
+        }
+    });
+
+    res.send(craig);
+    //res.send("WHEEE");
+});
+
+
+/*app.use('/', routes);
+app.use('/users', users);
+app.use('/tweet', tweet);*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,6 +59,8 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+
 
 // error handlers
 

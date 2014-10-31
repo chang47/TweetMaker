@@ -41,4 +41,7 @@ router.get('/craigs', function(req, res) {
     res.render("craigs");
 })
 
+
+
+
 module.exports = router;
