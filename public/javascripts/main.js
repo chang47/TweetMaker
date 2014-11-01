@@ -3,7 +3,7 @@ $(function() {
 		if(e.keyCode === 13) {
 			var parameters = { search: $(this).val()};
 			console.log("message");
-			$.post('/searching', parameters, function(data) {
+			$.get('/searching', parameters, function(data) {
 				console.log("message");
 				$('#results').html(data);
 			});

@@ -10,11 +10,24 @@ var users = require('./routes/users');
 var tweet = require('./routes/tweet');
 
 var app = express();
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(allowCrossDomain);
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -27,7 +40,7 @@ app.get('/', function(req, res) {
     res.render("craigs");
 })
 
-app.post('/searching', function(req, res) {
+app.get('/searching:search', function(req, res) {
     var val = req.query.search;
     
     var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20craigslist.search" +
@@ -44,7 +57,7 @@ app.post('/searching', function(req, res) {
         }
     });
 
-    res.send(craig);
+    res.send("WHEEE");
     //res.send("WHEEE");
 });
 
