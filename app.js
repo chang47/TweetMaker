@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var request = require('request');
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -40,7 +42,8 @@ app.get('/', function(req, res) {
     res.render("craigs");
 })
 
-app.get('/searching:search', function(req, res) {
+app.get('/searching', function(req, res) {
+
     var val = req.query.search;
     
     var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20craigslist.search" +
@@ -50,13 +53,17 @@ app.get('/searching:search', function(req, res) {
 
     request(url, function(err, resp, body) {
         body = JSON.parse(body);
+        console.log(body);/*
         if(!body.query.results.RDF.item) {
             craig = "No results found. Try Again.";
         } else {
             craig = body.query.results.item[0]['about'];
-        }
+        }*/
     });
 
+    if(val == "word") {
+        res.send(val);
+    }
     res.send("WHEEE");
     //res.send("WHEEE");
 });
