@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var request = require('request');
+var jsdom = require('jsdom');
 
 
 var routes = require('./routes/index');
@@ -62,12 +63,29 @@ app.get('/searching', function(req, res) {
     });
 
     if(val == "word") {
-        res.send(val);
+        res.send("word");
     }
     res.send("WHEEE");
     //res.send("WHEEE");
 });
 
+app.get('/nodetube', function(req, res) {
+    request({uri: "http://youtube.com"}, function(err, res, body) {
+        var self = this;
+        self.items = newAray();
+        if(err && res.statusCode !== 200) {
+            console.log("Error");
+        }
+        jsdom.env({
+            html: body,
+            scripts: ['http://code.jquery.com/jquery-1.6.min.js']
+        }, function(err, window){
+            var $ = window.jQuery;
+            console.log($('title').text());
+            res.end($('title')).text();
+        });
+    });
+});
 
 /*app.use('/', routes);
 app.use('/users', users);
