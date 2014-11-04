@@ -12,7 +12,7 @@ var users = require('./routes/users');
 var tweet = require('./routes/tweet');
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('localhost:27017/nodetest1')
+var db = monk('localhost:27017/tweet')
 
 var app = express();
 var allowCrossDomain = function(req, res, next) {
@@ -70,10 +70,77 @@ app.get('/searching', function(req, res) {
     //res.send("WHEEE");
 });
 
+app.get('/add', function(req, res) {
+    res.render('add', { title: "Add new Data Point"});
+});
+
+app.post('/added', function(req, res) {
+    var db = req.db
+    var url = req.body.url
+
+    var userTitle = scrape(url, db)
+
+    res.location('/result')
+    res.redirect('/result')
+
+  /*  collection.insert({
+        "title" : userTitle
+    }, function(err, doc) {
+        if (err) {
+            res.send("There are errors");
+        } else {
+            res.location('/result')
+            res.redirect('/result')
+        }
+    })*/
+})
+
+function scrape(url, db) {
+    try {
+        var Spooky = require('spooky');
+    } catch (e) {
+        var Spooky = require('../lib/spooky');
+    }
+
+    var spooky = new Spooky({
+            child: {
+                transport: 'http'
+            },
+            casper: {
+                logLevel: 'debug',
+                verbose: true
+            }
+        }, function (err) {
+            if (err) {
+                e = new Error('Failed to initialize SpookyJS');
+                e.details = err;
+                throw e;
+            }
+
+            spooky.start(
+                'http://en.wikipedia.org/wiki/Spooky_the_Tuff_Little_Ghost');
+            spooky.then(function () {
+                var title = this.emit('hello', 'Hello, from ' + this.evaluate(function () {
+                    return document.title;
+                }));
+            });
+            spooky.run();
+        });
+
+    spooky.on('error', function (e, stack) {
+        console.error(e);
+
+        if (stack) {
+            console.log(stack);
+        }
+    });
+}
+
 app.get('/result', function(req, res) {
     var db = req.db;
     var collection = db.get('usercollection');
     collection.find({},{},function(e,docs){
+        console.log("This is " + docs);
         res.render('userlist', {
             "userlist" : docs
         });
