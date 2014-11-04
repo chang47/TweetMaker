@@ -5,12 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var request = require('request');
-var jsdom = require('jsdom');
 
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var tweet = require('./routes/tweet');
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/nodetest1')
 
 var app = express();
 var allowCrossDomain = function(req, res, next) {
@@ -38,6 +40,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req, res, next) {
+    req.db = db;
+    next();
+});
+
 
 app.get('/', function(req, res) {
     res.render("craigs");
@@ -45,12 +52,6 @@ app.get('/', function(req, res) {
 
 app.get('/searching', function(req, res) {
 
-    var val = req.query.search;
-    
-    var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20craigslist.search" +
-"%20where%20location%3D%22sfbay%22%20and%20type%3D%22jjj%22%20and%20query%3D%22" + val + "%22&format=" +
-"json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-    console.log(url);
 
     request(url, function(err, resp, body) {
         body = JSON.parse(body);
@@ -67,6 +68,16 @@ app.get('/searching', function(req, res) {
     }
     res.send("WHEEE");
     //res.send("WHEEE");
+});
+
+app.get('/result', function(req, res) {
+    var db = req.db;
+    var collection = db.get('usercollection');
+    collection.find({},{},function(e,docs){
+        res.render('userlist', {
+            "userlist" : docs
+        });
+    });
 });
 
 app.get('/nodetube', function(req, res) {
