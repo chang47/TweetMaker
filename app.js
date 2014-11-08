@@ -75,9 +75,20 @@ app.get('/add', function(req, res) {
     res.render('add', { title: "Add new Data Point"});
 });
 
-app.get('/test', function(req, res) {
-    var db = req.db
-    var url = req.body.url
+
+app.get('/removeall', function(req, res) {
+    var db = req.db;
+    var collection = db.get('usercollection');
+    collection.remove({});
+    res.send("deleted everything")
+});
+
+/*
+    Scrapes and adds first 30 elements from ycombinator into tweet DB
+*/
+app.get('/quickadd', function(req, res) {
+    var db = req.db;
+    var url = req.body.url;
     var collection = db.get('usercollection');
     //var userTitle = scrape(url, db)
     var val = "";
@@ -114,73 +125,26 @@ app.get('/test', function(req, res) {
             });
         }
     });
-    res.send("nice try");
+    res.send("Added 30 elements into the DB");
 });
 
+/**
+    The page sent to do the scraping on the backend. Redirects to result, 
+    though nothing may be there, the result of asynchoronous action
+    @TODO nothing
+*/
 app.post('/added', function(req, res) {
     var db = req.db
     var url = req.body.url
     var collection = db.get('usercollection');
-    //var userTitle = scrape(url, db)
-   
-
 
     res.location('/result')
     res.redirect('/result')
-
-  /*  collection.insert({
-        "title" : userTitle
-    }, function(err, doc) {
-        if (err) {
-            res.send("There are errors");
-        } else {
-            res.location('/result')
-            res.redirect('/result')
-        }
-    })*/
 })
 
-function scrape(url, db) {
-    try {
-        var Spooky = require('spooky');
-    } catch (e) {
-        var Spooky = require('../lib/spooky');
-    }
-
-    var spooky = new Spooky({
-            child: {
-                transport: 'http'
-            },
-            casper: {
-                logLevel: 'debug',
-                verbose: true
-            }
-        }, function (err) {
-            if (err) {
-                e = new Error('Failed to initialize SpookyJS');
-                e.details = err;
-                throw e;
-            }
-
-            spooky.start(
-                'http://en.wikipedia.org/wiki/Spooky_the_Tuff_Little_Ghost');
-            spooky.then(function () {
-                var title = this.emit('hello', 'Hello, from ' + this.evaluate(function () {
-                    return document.title;
-                }));
-            });
-            spooky.run();
-        });
-
-    spooky.on('error', function (e, stack) {
-        console.error(e);
-
-        if (stack) {
-            console.log(stack);
-        }
-    });
-}
-
+/**
+    Displays everything in the test DB
+*/
 app.get('/result', function(req, res) {
     var db = req.db;
     var collection = db.get('usercollection');
