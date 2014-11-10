@@ -29,11 +29,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(function(req, res, next) {
     req.db = db;
     next();
 });
 
+
+app.use('/', routes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
@@ -195,11 +198,6 @@ app.get('/nodetube', function(req, res) {
     });
 });
 
-app.get('/display', function(req, res) {
-    res.render('display', {
-        title: "Users"
-    });
-});
 
 /*app.get('/getuser', function(req, res) {
     var db = req.db;
