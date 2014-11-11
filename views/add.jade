@@ -1,7 +1,11 @@
-extends layout
+extends tweetLayout
 
 block content
-	h1= title
-	form#formAddUser(name="addURL", method="post", action="/added")
-		input#inputUrl(type="text", placeholder="url", name="url")
-		button#btnSubmit(type="submit") submit
+	h1 #{title}
+	h2 Make Tweet
+	#makeTweet
+		fieldset
+			input#inputURL(type="text", placeholder="Enter your URL here")
+			button#btnSubmit Submit
+
+	#results

@@ -92,6 +92,7 @@ router.get('/quickadd', function(req, res) {
     res.send("Added 30 elements into the DB");
 });
 
+
 /**
     The page sent to do the scraping on the backend. Redirects to result, 
     though nothing may be there, the result of asynchoronous action
