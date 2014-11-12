@@ -70,6 +70,7 @@ function addUser(event) {
 
 };
 
+//@TODO parse string to be 118 char and include URL
 function searchTweets(event) {
 	event.preventDefault();
 	var search = {
@@ -83,12 +84,16 @@ function searchTweets(event) {
 		dataType: 'JSON'
 	}).done(function(response) {
 		//requires some form of error checking
-		console.log(response);
+		populateTweets(response)
 	});
 }
 
-function populateTweets(event) {
-		event.preventDefault();
-		$.getJSON('/maketweets')
+function populateTweets(json) {
+	var content = "";
+	event.preventDefault();
+	for(var key in json) {
+		content += "<p>" + json[key] + "</p>";
+	}
+	$('#results').html(content);
 }
 
