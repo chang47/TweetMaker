@@ -48,7 +48,13 @@ function editKeyboard(event) {
 
 function sendCall() {
 	$('#results').children().each(function(key) {
-		console.log($(this).find('textarea').text());
+		//if it does exist, length will be greater than 0
+		if($(this).has('input').length > 0) {
+			if($(this).find('input').is(':checked') > 0) {
+				console.log($(this).find('textarea').text());
+			}
+		}
+		
 	});
 } 
 
