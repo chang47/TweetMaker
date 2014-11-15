@@ -3,6 +3,11 @@ var router = express.Router();
 var request = require('request');
 var cheerio = require('cheerio');
 
+router.post('/call', function(req, res) {
+    console.log("made it in here");
+    res.send("You did it!");
+});
+
 // tweets can be 117 characters long and the URL are 
 // 23 characters long/
 router.post('/maketweets', function(req, res) {
@@ -22,13 +27,14 @@ router.post('/maketweets', function(req, res) {
             //return results
             //console.log(tweets.toString());
             var json = JSON.parse(JSON.stringify(tweets));
-            console.log(json);
+            //console.log(json);
             res.json(json);
         } else {
         	res.send('error');
         }
     });
 });
+
 
 
 module.exports = router;

@@ -15,7 +15,8 @@ function searchTweets(event) {
 		type: 'POST',
 		data: search,
 		url: '/tweet/maketweets',
-		dataType: 'JSON'
+		dataType: 'JSON',
+		error: ajaxError
 	}).done(function(response) {
 		//requires some form of error checking
 		populateTweets(response)
@@ -47,15 +48,37 @@ function editKeyboard(event) {
 }
 
 function sendCall() {
+	var tweets = [];
 	$('#results').children().each(function(key) {
 		//if it does exist, length will be greater than 0
 		if($(this).has('input').length > 0) {
 			if($(this).find('input').is(':checked') > 0) {
-				console.log($(this).find('textarea').text());
+				var text = $(this).find('textarea').text();
+				tweets.push({"text": text});
 			}
 		}
-		
 	});
+	//console.log(tweets);
+	if(tweets.length > 0) {
+		var json = (JSON.stringify(tweets));
+		//console.log(json);
+		json1 = {'text': 5};
+		var search = {
+						'url': 'http://benefitsofmuscle.com/benefits-of-squat/'
+					};
+		$.ajax({
+				type:'POST',
+				data: search,
+				url: '/tweet/call',
+				dataType: 'text',
+				error: ajaxError
+			}).done(function(response) {
+				console.log(response + " asdasd");
+			});
+	}
 } 
 
+function ajaxError(jqXHR, textStatus, errorThrown){
+	console.log(textStatus);
+}
 
