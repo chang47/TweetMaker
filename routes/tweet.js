@@ -4,7 +4,14 @@ var request = require('request');
 var cheerio = require('cheerio');
 
 router.post('/call', function(req, res) {
-    console.log("made it in here");
+    var url = "buffer api";
+    var tweets = req.body; //@TODO what does this grab?
+    console.log(tweets);
+/*    request(url, function(error, response, html) {
+        if(!error && function(error, response, html) {
+            //api calls...
+        });
+    })*/
     res.send("You did it!");
 });
 

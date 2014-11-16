@@ -54,7 +54,7 @@ function sendCall() {
 		if($(this).has('input').length > 0) {
 			if($(this).find('input').is(':checked') > 0) {
 				var text = $(this).find('textarea').text();
-				tweets.push({"text": text});
+				tweets.push(text);
 			}
 		}
 	});
@@ -62,13 +62,9 @@ function sendCall() {
 	if(tweets.length > 0) {
 		var json = (JSON.stringify(tweets));
 		//console.log(json);
-		json1 = {'text': 5};
-		var search = {
-						'url': 'http://benefitsofmuscle.com/benefits-of-squat/'
-					};
 		$.ajax({
 				type:'POST',
-				data: search,
+				data: json,
 				url: '/tweet/call',
 				dataType: 'text',
 				error: ajaxError
