@@ -18,7 +18,7 @@ router.post('/call', function(req, res) {
 
 // tweets can be 117 characters long and the URL are 
 // 23 characters long/
-router.post('/maketweets', function(req, res) {
+/*router.post('/maketweets', function(req, res) {
     var url = req.body.url;
     var tweets = [];
     request(url, function(error, response, html) {
@@ -41,7 +41,7 @@ router.post('/maketweets', function(req, res) {
         	res.send('error');
         }
     });
-});
+});*/
 
 router.get('/done', function(req, res) {
     res.send("Your tweets have been successfully added");
