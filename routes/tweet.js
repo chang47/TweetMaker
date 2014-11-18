@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var cheerio = require('cheerio');
-var OAuth = require('OAuth');
+//var OAuth = require('OAuth');
 
 router.post('/call', function(req, res) {
     var url = "https://api.bufferapp.com/1/profiles.json&pretty=true";
@@ -18,7 +18,7 @@ router.post('/call', function(req, res) {
 
 // tweets can be 117 characters long and the URL are 
 // 23 characters long/
-/*router.post('/maketweets', function(req, res) {
+router.post('/maketweets', function(req, res) {
     var url = req.body.url;
     var tweets = [];
     request(url, function(error, response, html) {
@@ -41,13 +41,13 @@ router.post('/call', function(req, res) {
         	res.send('error');
         }
     });
-});*/
+});
 
 router.get('/done', function(req, res) {
     res.send("Your tweets have been successfully added");
 });
 
-router.get('/access', function(req, res) {
+/*router.get('/access', function(req, res) {
     var OAuth2 = OAuth.OAuth2;
     var twitterConsumerKey = '';
     var twitterConsumerSecret = '';
@@ -79,7 +79,7 @@ router.get('/access', function(req, res) {
                     return callback(e, data);
                 });
         });
-});
+});*/
 
 
 module.exports = router;
