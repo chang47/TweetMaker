@@ -35,7 +35,13 @@ router.get('/searching', function(req, res) {
     //res.send("WHEEE");
 });
 
+//first authenticate, then redirect here, which if fails
+//redirect back.
 router.get('/add', function(req, res) {
+    if(req.url == '/add') {
+        res.redirect('/tweet/provider');
+    }
+    console.log(req.url);
     res.render('add', { title: "Add new Data Point"});
 });
 
