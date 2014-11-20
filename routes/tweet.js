@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var cheerio = require('cheerio');
-var OAuth = require('oauth');
+var OAuth2 = require('OAuth').OAuth2;
+var https = require('https'); 
 
 router.post('/call', function(req, res) {
     var url = "https://api.bufferapp.com/1/profiles.json&pretty=true";
@@ -48,10 +49,38 @@ router.get('/done', function(req, res) {
 });
 
 router.get('/access', function(req, res) {
-    var OAuth2 = OAuth.OAuth2;
-    var twitterConsumerKey = '';
-    var twitterConsumerSecret = '';
-    
+    var key = "BmXm38jfFzm3VkyyxJEfuH0nh";
+    var secret = 'LhVejj0tonrXvdQNAAJ01Ww4SCw8hRLUW2AP0T7sgUDVmNwob0';
+    var oauth2 = new OAuth2(key, secret, 'https://api.twitter.com/', null,
+        'oauth2/token', null);
+
+    oauth2.getOAuthAccessToken('', {
+        'grant_type': 'client_credentials'
+    }, function(e, access_token) {
+        console.log("access token: ");
+        console.log(access_token);
+        var options = {
+            hostname: 'api.twitter.com',
+            path: '/1.1/statuses/user_timeline.json?screen_name=Joshchang43',
+            headers: {
+                Authorization: "bearer" + access_token
+            } 
+        };
+
+        https.get(options, function(result) {
+            var buffer = '';
+            result.setEncoding('utf8');
+            result.on('data', function(data) {
+                buffer += data;
+            });
+            result.on('end', function(){
+                var tweets = JSON.parse(buffer);
+                console.log(tweets);
+            });
+        });
+        res.send(access_token);
+    });
+
 });
 
 
