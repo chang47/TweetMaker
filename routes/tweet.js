@@ -6,11 +6,21 @@ var OAuth2 = require('OAuth').OAuth2;
 var https = require('https'); 
 var passport = require('passport');
 OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+var oauth2 = require('simple-oauth2')({
+  clientID: '5468db667e506698595b8d77',
+  clientSecret: 'b3cbde5bc28ec2df57dd0e7f61d5fe44',
+  site: 'https://api.bufferapp.com',
+  authorizationPath: '/oauth2/authorize',
+  tokenPath: '/1/oauth2/token.json'
+});
+                 console.log(oauth2);      
 
 var key = "BmXm38jfFzm3VkyyxJEfuH0nh";
 var secret = 'LhVejj0tonrXvdQNAAJ01Ww4SCw8hRLUW2AP0T7sgUDVmNwob0';
-var oauth2 = new OAuth2(key, secret, 'https://api.twitter.com/', null,
+/*var oauth2 = new OAuth2(key, secret, 'https://api.twitter.com/', null,
         'oauth2/token', null);
+*/
+var count = 1;
 
 router.post('/call', function(req, res) {
     var url = "https://api.bufferapp.com/1/profiles.json&pretty=true";
@@ -52,8 +62,45 @@ router.post('/maketweets', function(req, res) {
 });
 
 router.get('/done', function(req, res) {
-    console.log(req);
-    res.send("Your tweets have been successfully added");
+    console.log(count);
+    count++;
+      /*  console.log('1 ' + req.url);
+       console.log('2 ' + req.url.code);
+       console.log('3 ' + req.body);
+       console.log('4 ' + req.body.code);
+       console.log('5 ' + req.body.url);
+       console.log('6' + req.query['code']);*/
+      request.post("https://api.bufferapp.com/1/oauth2/token.json", {form: {client_id: '5468db667e506698595b8d77',
+                                                                    client_secret: 'b3cbde5bc28ec2df57dd0e7f61d5fe44',
+                                                                    redirect_url: '/tweet/done',
+                                                                    code: req.query.code,
+                                                                    grant_type: 'authorization_code'}},
+                                                                    function(err, httpResponse, body) {
+                                                                        if (err) {
+                                                                            console.log(err);
+                                                                            //console.log(httpResponse);
+                                                                        }
+                                                                       /* for(var key in httpResponse) {
+                                                                            console.log("key " + key + 'value: ' + httpResponse[key]);
+                                                                        }*/
+                                                                        console.log("response: " + httpResponse);
+                                                                        console.log("body" + body)
+                                                                        res.send('test');
+                                                                        //res.redirect('/done2' + "?state=asdsa")
+                                                                    });
+    //
+});
+
+router.get('/test', function(req, res) {
+    console.log("zzzz " + oauth2);
+    res.send(oauth2);
+})
+
+
+router.get('/provider2', function(req, res) {
+    console.log(oauth2);
+    res.send(oauth2);
+    //res.redirect('https://bufferapp.com/oauth2/authorize?client_id=5468db667e506698595b8d77&redirect_url=&response_type=code');
 });
 
 router.get('/access', function(req, res) {
@@ -67,7 +114,7 @@ router.get('/access', function(req, res) {
         } else {
             console.log("access token: ");
             console.log(access_token);
-            req.sessuin.oauth = {};
+            req.session.oauth = {};
             req.session.oauth.token = access_token;
             res.redirect()
             //api call command
@@ -96,6 +143,14 @@ router.get('/access', function(req, res) {
 
 });
 
+var authorization_uri = oauth2.authCode.authorizeURL({
+  redirect_uri: ''
+});
+
+router.get('/auth', function(req, res) {
+    res.redirect(authorization_uri);
+});
+
 passport.use('provider', new OAuth2Strategy({
     authorizationURL: 'https://bufferapp.com/oauth2/authorize',
     tokenURL: 'https://api.bufferapp.com/1/oauth2/token.json',
@@ -110,11 +165,45 @@ passport.use('provider', new OAuth2Strategy({
 router.get('/provider', passport.authenticate('provider'));
 
 //Note on buffer you manually selected to come back here.
-router.get('/callback', passport.authenticate('provider', {failureRedirect: '/'},
-    function(req, res) {
-        //get access token
-        //send it to /add
-    }));
+router.get('/callback2', passport.authenticate('provider', {failureRedirect: '/tweet/failure',
+                                                            successRedirect: '/tweet/success'}
+));
 
+router.get('/callback', function(req, res) {
+    res.send(oauth2);
+    var code = req.query['code'];
+    console.log(code);
+    console.log('oauth2: ' + oauth2);
+/*    for(var key in oauth2) {
+        console.log("key " + key + ' value ' + oauth2[key]);
+        for(var key2 in oauth2[key]) {
+            console.log("key2 " + key2 + 'value2' + oauth2[key][key2]);
+        }
+    }*/
+    oauth2.authCode.getToken({
+        redirect_uri: '/tweet/callback',
+        client_id: '5468db667e506698595b8d77',
+        client_secret: 'b3cbde5bc28ec2df57dd0e7f61d5fe44',
+        redirect_url: '/tweet/done',
+        code: req.query['code'],
+        grant_type: 'authorization_code'
+    }, function (error, result) {
+        if(error) {
+            console.log("Error message " + error.message);
+            console.log(result);
+        }
+  //      token = oauth2.accessToken.create(result);
+        //console.log(token);
+        res.send(result);
+    });
+});
+
+router.get('/success', function(req, res) {
+    res.send('success');
+});
+
+router.get('/failure', function(req, res) {
+    res.send('failure');
+});
 
 module.exports = router;
