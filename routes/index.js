@@ -38,11 +38,15 @@ router.get('/searching', function(req, res) {
 //first authenticate, then redirect here, which if fails
 //redirect back.
 router.get('/add', function(req, res) {
-    if(req.url == '/add') {
-        res.redirect('/tweet/provider');
+    if(req.app.get('code') == '') {
+        //res.redirect('/tweet/provider');
+        res.send('failed');
     }
+    var token = req.app.get('code');
+    req.app.set('code', '');
     console.log(req.url);
-    res.render('add', { title: "Add new Data Point"});
+    res.render('add', { title: "Add new Data Point",
+                        token: token});
 });
 
 

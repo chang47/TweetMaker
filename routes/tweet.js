@@ -85,9 +85,11 @@ router.get('/access', function(req, res) {
         } else {
             console.log("access token: ");
             console.log(access_token);
+            req.app.set('code', access_token);
             //req.session.oauth = {};
             //req.session.oauth.token = access_token;
-            res.send('worked!')
+            //res.send('worked!')
+            res.redirect('/add');
             //res.redirect()
             //api call command
 /*            var options = {
@@ -161,8 +163,8 @@ router.get('/callback', function(req, res) {
             console.log("Error message " + error.message);
             console.log(result);
         }
-  //      token = oauth2.accessToken.create(result);
-        //console.log(token);
+        token = oauth2.accessToken.create(result);
+        console.log(token);
         res.send(result);
     });
 });
@@ -173,6 +175,16 @@ router.get('/success', function(req, res) {
 
 router.get('/failure', function(req, res) {
     res.send('failure');
+});
+
+router.get('/test1', function(req, res) {
+	req.app.set('code', 'asd');
+    res.redirect('/tweet/test2');
+});
+
+router.get('/test2', function(req, res) {
+	console.log('val: ' + req.app.get('code'))
+    res.send(req.app.get('code'));
 });
 
 module.exports = router;
