@@ -43,7 +43,7 @@ router.get('/add', function(req, res) {
         res.send('failed');
     }
     var token = req.app.get('code');
-    req.app.set('code', '');
+    //req.app.set('code', '');
     console.log(req.url);
     res.render('add', { title: "Add new Data Point",
                         token: token});

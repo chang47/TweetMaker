@@ -1,7 +1,7 @@
 extends tweetLayout
 
 block content
-	h1 #{title}
+	h1 #{token}
 	h2 Make Tweet
 	#makeTweet
 		fieldset
@@ -10,3 +10,4 @@ block content
 			|  (Note URL's will always take 22 characters)
 
 	#results
+	input#code(type="hidden", value="#{token}")

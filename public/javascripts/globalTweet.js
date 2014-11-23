@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	$('#btnSubmit').on('click', searchTweets);
+	var code = $("#code").val();
+	$('#btnSubmit').on('click', {code: code} ,searchTweets);
 	$('.results').on('click', editKeyboard);
 	$(document).on('click', '#send', sendCall);
 });
