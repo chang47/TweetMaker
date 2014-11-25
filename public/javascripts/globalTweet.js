@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	var code = $("#code").val();
-	$('#btnSubmit').on('click', {code: code} ,searchTweets);
+	$('#btnSubmit').on('click' ,searchTweets);
 	$('.results').on('click', editKeyboard);
-	$(document).on('click', '#send', sendCall);
+	$(document).on('click', '#send', {code: code}, sendCall);
 });
 
 //@TODO parse string to be 118 char and include URL
@@ -48,7 +48,7 @@ function editKeyboard(event) {
 	$(this).next().html('sdf');
 }
 
-function sendCall() {
+function sendCall(event) {
 	var tweets = [];
 	$('#results').children().each(function(key) {
 		//if it does exist, length will be greater than 0
@@ -61,10 +61,9 @@ function sendCall() {
 	});
 	//console.log(tweets);
 	if(tweets.length > 0) {
-		var json = {code: event.data.code};
-		var jsonTweet = (JSON.stringify(tweets));
-		var finalJson = $.merge(json, jsonTweet);
-		console.log(finalJson);
+		var json = {code: event.data.code,
+					tweets: tweets};
+		console.log(json);
 		//console.log(json);
 		$.ajax({
 				type:'POST',

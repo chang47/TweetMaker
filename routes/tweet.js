@@ -22,16 +22,16 @@ var oauth2 = new OAuth2(key, secret, 'https://api.bufferapp.com', null,
 var count = 1;
 
 router.post('/call', function(req, res) {
-    var url = "https://api.bufferapp.com/1/profiles.json&pretty=true";
     var tweets = req.body; //@TODO what does this grab?
     var code = req.body.code;
-    console.log(tweets);
-/*    request(url, function(error, response, html) {
-        if(!error && function(error, response, html) {
-            //api calls...
-        });
-    })*/
-    res.send("You did it!");
+    var url = "https://api.bufferapp.com/1/profiles.json?access_token=" + code;
+    request.get(url, function(error, response, html) {
+        if(!error && response.statusCode == 200) {
+   			res.json(html);         
+        } else {
+        	res.send('bad');
+        }
+    });
 });
 
 // tweets can be 117 characters long and the URL are 
