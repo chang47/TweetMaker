@@ -9,7 +9,7 @@ $(document).ready(function() {
 function searchTweets(event) {
 	event.preventDefault();
 	var search = {
-		'url': $('#makeTweet fieldset input#inputURL').val()
+		url: $('#makeTweet fieldset input#inputURL').val(),
 	};
 	console.log(search);
 	$.ajax({
@@ -61,7 +61,10 @@ function sendCall() {
 	});
 	//console.log(tweets);
 	if(tweets.length > 0) {
-		var json = (JSON.stringify(tweets));
+		var json = {code: event.data.code};
+		var jsonTweet = (JSON.stringify(tweets));
+		var finalJson = $.merge(json, jsonTweet);
+		console.log(finalJson);
 		//console.log(json);
 		$.ajax({
 				type:'POST',

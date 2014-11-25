@@ -24,6 +24,7 @@ var count = 1;
 router.post('/call', function(req, res) {
     var url = "https://api.bufferapp.com/1/profiles.json&pretty=true";
     var tweets = req.body; //@TODO what does this grab?
+    var code = req.body.code;
     console.log(tweets);
 /*    request(url, function(error, response, html) {
         if(!error && function(error, response, html) {
@@ -52,7 +53,6 @@ router.post('/maketweets', function(req, res) {
             //return results
             //console.log(tweets.toString());
             var json = JSON.parse(JSON.stringify(tweets));
-            //console.log(json);
             res.json(json);
         } else {
         	res.send('error');
