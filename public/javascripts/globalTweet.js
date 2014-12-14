@@ -64,15 +64,17 @@ function sendCall(event) {
 		var json = {code: event.data.code,
 					tweets: tweets};
 		console.log(json);
+		//@TODO find out how to manipulate arrays of tweets
+		console.log(typeof json[tweets]);
 		//console.log(json);
 		$.ajax({
 				type:'POST',
 				data: json,
 				url: '/tweet/call',
-				dataType: 'text',
+				dataType: 'json',
 				error: ajaxError
 			}).done(function(response) {
-				console.log(response + " asdasd");
+				console.log(response);
 			});
 	}
 } 

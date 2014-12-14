@@ -21,16 +21,51 @@ var oauth2 = new OAuth2(key, secret, 'https://api.bufferapp.com', null,
 
 var count = 1;
 
+/**
+* Makes api call to buffer to schedule the tweets.
+*/
 router.post('/call', function(req, res) {
-    var tweets = req.body; //@TODO what does this grab?
-    var code = req.body.code;
-    var url = "https://api.bufferapp.com/1/profiles.json?access_token=" + code;
-    request.get(url, function(error, response, html) {
-        if(!error && response.statusCode == 200) {
-   			res.json(html);         
-        } else {
-        	res.send('bad');
-        }
+    var tweets = req.body; //grabs the object sent
+    var code = req.body.code; //grabs the api code
+    var tweets = req.body.tweets;
+    res.json(tweets);
+
+
+
+    var profileUrl = "https://api.bufferapp.com/1/profiles.json?access_token=" + code; 
+    var url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + code;
+    //@TODO figure out how to get tweet elements? JSON.parse?
+    request.get(profileUrl, function(error, response, html) {
+    	if(!error && response.statusCode == 200) {
+    		var found = false;
+    		//console.log(obj);
+    		var obj = JSON.parse(html);
+			for(var key in obj) {
+				if(obj[key].service == "twitter") {
+					found = true;
+					var id = [obj[key].id];
+					//for(var i = 0; i < tweets.length; i++) {
+						var data = {
+							text: "Another tweet to rule them all!",
+							profile_ids: id	
+						}
+						request.post({url: url, form: data}, function(error, response, html) {
+						    if(!error && response.statusCode == 200) {
+								res.json(html);
+						    } else {
+						    	res.send(response);
+						    }
+					    });
+					//}
+					//res.send(obj[key]);
+				}
+			}
+			if(!found) {
+				res.send({status: "no twitter account found!"});
+			}
+    	} else {
+    		res.send(response);
+    	}
     });
 });
 
