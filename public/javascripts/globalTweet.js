@@ -65,7 +65,10 @@ function sendCall(event) {
 					tweets: tweets};
 		console.log(json);
 		//@TODO find out how to manipulate arrays of tweets
-		console.log(typeof json[tweets]);
+		console.log(typeof json['tweets']);
+		console.log(json['tweets']);
+		console.log(json['tweets'][0]);
+		//console.log(typeof json[tweets]);
 		//console.log(json);
 		$.ajax({
 				type:'POST',
@@ -74,6 +77,7 @@ function sendCall(event) {
 				dataType: 'json',
 				error: ajaxError
 			}).done(function(response) {
+				console.log("returned: ");
 				console.log(response);
 			});
 	}
